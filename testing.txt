@@ -120,7 +120,7 @@ connect-distributed.bat ..\..\etc\kafka\connect-distributed.properties
 plugin.path=C:\kafka\\confluent-5.2.0\\share\\kafka\\plugins
 
 ###############################
-connect-distributed.properties
+connect-distributed.bat
 
 @echo off
 rem Licensed to the Apache Software Foundation (ASF) under one or more
