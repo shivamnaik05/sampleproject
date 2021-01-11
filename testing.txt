@@ -1,0 +1,120 @@
+GET http://localhost:8083/connectors/CamelTelegramSourceConnector/status
+
+GET http://localhost:8083/connector-plugins
+
+GET : http://localhost:8082/subjects/subjectname/versions/
+
+POST : http://localhost:8083/connectors/
+	Body:
+	 {
+        "name": "CamelTelegramSourceConnector",
+        "config": {
+ "connector.class":"org.apache.camel.kafkaconnector.telegram.CamelTelegramSourceConnector",
+ "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+"value.converter":"org.apache.kafka.connect.storage.StringConverter",
+"topics":"mytelegramtopic",
+"camel.source.endpoint.authorizationToken":"1586976426:AAEnGEVZNvWyD5QeJ1pVhj7_ttsfsGoBtNo",
+"camel.source.path.type":"bots"
+
+    }
+      }
+	  
+########################################
+{
+    "name": "spool-file-connector-02",
+    "config":
+    {
+        "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector",
+        "topic": "topic02",
+        "input.path": "C:\\shiva\\kafka\\file-spool\\input",
+        "input.file.pattern": "^.*$",
+        "error.path": "C:\\file-spool\\error",
+        "finished.path": "C:\\file-spool\\finished",
+		"schema.generation.enabled":"true",
+		"schema.generation.key.name":"Key",
+		"schema.generation.value.name":"Envelop",
+		 "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+		"value.converter.schema.registry.url":"http://localhost:8082/",
+		"key.converter.schema.registry.url":"http://localhost:8082/",
+		"file.minimum.age.ms": "10000"
+    }
+}
+
+#########################################################################
+
+ {
+    "name": "card-auths-spooldir-connector",
+   "config":{
+    "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector",
+    "topic": "card-auths-transactions",
+    "input.path": "C:/opt/kafka/file-spool/input",
+    "input.file.pattern": "^.*$",
+    "error.path": "C:/opt/kafka/file-spool/error",
+    "finished.path": "C:/opt/kafka/file-spool/finished",
+   "value.converter": "io.confluent.connect.avro.AvroConverter",
+   "value.converter.schema.registry.url":"http://localhost:8082/",
+    "file.minimum.age.ms": "10000"
+    }
+    }
+	
+########################################################
+{
+        "name": "connector",
+        "config": {
+  "connector.class": "io.debezium.connector.sqlserver.SqlServerConnector",
+  "database.hostname": "hostname",
+  "database.port": "1234",
+  "database.user": "usera",
+  "database.password": "password",
+  "database.dbname": "dbname",
+  "database.server.name": "servername",
+  "table.whitelist": "db.tablename",
+  "database.history.kafka.bootstrap.servers":"localhost:9092",
+  "database.history.kafka.topic": "dbhistory.topicname",
+  "snapshot.mode":"initial_schema_only"
+        }
+      }
+	  
+	  
+################################################################
+Download the following two files and place at C:\opt\kafka\confluent-5.2.0\bin\windows - 
+schema-registry-start.bat
+schema-registry-run-class.bat
+The above two files are command line utilities to start schema registry, the out-of-the-box Confluent package does not provide them; the files are referenced from following source - 
+https://github.com/renukaradhya/confluentplatform/tree/master/bin/windows
+
+
+####################################################
+Start-up
+
+Open command prompt and  Navigate to C:\opt\kafka\confluent-5.2.0\bin\windows 
+
+>start kafka using following sequence of commands
+
+Start kafka using following commands - 
+
+Start zookeeper - 
+zookeeper-server-start.bat ..\..\etc\kafka\zookeeper.properties
+Start kafka server - 
+kafka-server-start.bat ..\..\etc\kafka\server.properties
+Start schema registry - 
+schema-registry-start.bat ..\..\etc\schema-registry\schema-registry.properties
+Start connector (distributed mode)- 
+connect-distributed.bat ..\..\etc\kafka\connect-distributed.properties
+
+
+
+#############################
+.\kafka-avro-console-consumer.bat
+--property schema.registry.url=http://localhost:8082
+--property print.key=true
+--property print.schema.ids=true
+--property schema.id.separator=: 
+--bootstrap-server localhost:9092
+--formatter io.confluent.kafka.formatter.AvroMessageFormatter
+--topic <topic name>--from-beginning
+
+
+##############################3
+plugin.path=C:\kafka\\confluent-5.2.0\\share\\kafka\\plugins
